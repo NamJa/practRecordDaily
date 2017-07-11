@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,9 +20,11 @@ import android.widget.Toast;
 import java.util.List;
 
 public class CrimeListFragment extends Fragment {
-
+    private List<Crime> mCrimes;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private CardView cardView;
+    public static int refreshItemCnt;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -47,7 +50,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(refreshItemCnt);
         }
     }
     //viewholder 구현
@@ -65,6 +68,7 @@ public class CrimeListFragment extends Fragment {
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title_text_view);
             mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date_text_view);
             mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
+            cardView = (CardView)itemView.findViewById(R.id.cardView);
 
         }
 
@@ -76,20 +80,8 @@ public class CrimeListFragment extends Fragment {
         }
         @Override
         public void onClick(View v) {
-/*            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-                int cx = v.getWidth() / 2;
-                int cy = v.getHeight() / 2;
-                float radious = v.getWidth();
-                Animator anim = ViewAnimationUtils.createCircularReveal(v, cx, cy, radious, 0);
-                anim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        mTitleTextView.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }*/
-        Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getmId());
+            refreshItemCnt = getAdapterPosition();
+            Intent intent = CrimeActivity.newIntent(getActivity(), mCrime.getmId());
             startActivity(intent);
         }
 
